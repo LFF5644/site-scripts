@@ -188,15 +188,40 @@ function setArgInterval(fun,time,args=null){// #TRASH_FUNCTION;
 		setInterval(funRun,time);
 	}	
 }
-function GetVar(usr,token,variable,fun=(r)=>{con.log(r)},args=null,host=""){
-	let url=`${host}<?=globals.vars['api_login.api']?>?want=getVar&usrName=${encodeURI(usr)}&usrToken=${encodeURI(token)}&var=${encodeURI(variable)}`
-	let res=GetFile(url,fun,args);
-	return(res);
+function GetCookie(cookieName){ // not used;
+	const result=doc.cookie
+		.split(";")
+		.filter(line=>
+			line.includes("=")==true&&
+			line.split("=").length==2
+		)
+		.map(line=>
+			line.trim()
+		)
+		.filter(line=>
+			line.split("=")[0]===cookieName
+		)
+	if(result.length==0){return undefined;}
+	else{return result[0].split("=")[1];}
 }
-function SetVar(usr,token,variable,value,fun=(r)=>{con.log(r)},args=null,host=""){
-	let url=`${host}<?=globals.vars['api_login.api']?>?want=setVar&usrName=${encodeURI(usr)}&usrToken=${encodeURI(token)}&var=${encodeURI(variable)}&value=${encodeURI(value)}`
-	let res=GetFile(url,fun,args);
-	return(res);
+function callApi(data){
+	const {
+		url="/server/account/account.api",
+		HandleServerResponse=console.log,
+		args={},
+	}=data;
+	fetch(url,{
+		method:"post",
+		headers:{"Content-Type":"application/json"},
+		credentials:"include",
+		body:JSON.stringify(args),
+	})
+		.then(res=>res.text())
+		.then(res=>HandleServerResponse({
+			serverResponse:res,
+			clientAction:args.want,
+			clientRequest:data,
+		}))
 }
 function MakeFunction(cmd,execute=false,resType="fun"){// #TRASH_FUNCTION;
 	let fun=new Function(cmd);
@@ -224,7 +249,7 @@ function Random(){
 	randomNum=Number(randomNum);
 	return(randomNum)
 }
-function CleanLog(logDes,msg,attr=""){con.log(`${logDes}${attr}: ${msg}`);}
+function CleanLog(logDes,msg,attr=""){con.log(`${logDes}${attr}: ${msg}`);}// #TRASH_FUNCTION;
 
 function AddSearch(search,value=undefined,sep="&",useCodeify=true){
 	if(sep==null){sep="&"}
