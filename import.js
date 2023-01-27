@@ -145,9 +145,9 @@ function AdvancedCaseChanger(text,upper="0,1",lower="1,[END]",upperPlace="left",
 	return(result);
 }
 function REPLACEALL(text="Hallo Welt!",replace=[[" ","_"],["!","?"]]){// #TRASH_FUNCTION;
-	if(type(replace)!=="object"){
+	if(typeof(replace)!=="object"){
 		error=Error("WRONG FORMAT ONLY LISTS ACCSEPTED!")
-		print(`ERROR in REPLACEALL: ${error}`)
+		console.log(`ERROR in REPLACEALL: ${error}`)
 		return(error);
 	}
 	for(rp of replace){
@@ -206,11 +206,11 @@ function GetCookie(cookieName){ // not used;
 }
 function callApi(data){
 	const {
-		url="/server/account/account.api",
+		api="/server/account/account.api",
 		HandleServerResponse=console.log,
 		args={},
 	}=data;
-	fetch(url,{
+	fetch(api,{
 		method:"post",
 		headers:{"Content-Type":"application/json"},
 		credentials:"include",
@@ -363,7 +363,7 @@ function tofsStr(str){
 function overflowRemove(text,maxLength,replaceTo="..."){
 	const length=text.length;
 	if(length<=maxLength){return text}
-	let t=0;
+	let t="";
 	let index=0;
 	let newText="";
 	for(t of text){
